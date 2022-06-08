@@ -1,5 +1,6 @@
 package com.api.helpr.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +20,14 @@ public class ClienteService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
-	//Métoido de busca por um ID no banco.
+	// Método de busca por um ID no banco.
 	public Cliente findById(Integer id) {
 		Optional<Cliente> obj = repository.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não foi encontrado: " + id));
 	}
+
+	// Método de busca por n ID's no banco
+    public List<Cliente> findAllClientes() {
+        return repository.findAll();
+    }
 }

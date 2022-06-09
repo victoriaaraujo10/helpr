@@ -24,18 +24,18 @@ public class ClienteService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
-	// Método de busca por um ID no banco.
+	// Método de busca por um ID no banco:
 	public Cliente findById(Integer id) {
 		Optional<Cliente> obj = repository.findById(id);
 		return obj.orElseThrow(() -> new ObjectNotFoundException("Objeto não foi encontrado: " + id));
 	}
 
-	// Método de busca por n ID's no banco
+	// Método de busca por n ID's no banco:
 	public List<Cliente> findAllClientes() {
 		return repository.findAll();
 	}
 
-	// Método de criação - novo cliente
+	// Método de criação - novo cliente:
 	public Cliente create(ClienteDTO objDto) {
 		objDto.setId(null);
 		validaCpfEEmail(objDto);
@@ -43,7 +43,7 @@ public class ClienteService {
 		return repository.save(newObj);
 	}
 
-	// Método que valida: CPF & e-mail
+	// Método que valida: CPF & e-mail:
 	private void validaCpfEEmail(ClienteDTO objDto) {
 
 		Optional<Pessoa> obj = pessoaRepository.findByCpf(objDto.getCpf());
@@ -57,13 +57,23 @@ public class ClienteService {
 		}
 	}
 
-	// Método que modifica os clientes existentes
+	// Método que modifica os clientes existentes:
 	public Cliente update(Integer id, ClienteDTO objDto) {
 		objDto.setId(id);
 		Cliente oldObj = findById(id);
 		validaCpfEEmail(objDto);
 		oldObj = new Cliente(objDto);
 		return repository.save(oldObj);
+	}
+
+	// Método que deleta o ID do cliente:
+	public void delete(Integer id) {
+		Cliente obj = findById(id);
+		if(obj.getChamados().size() > 0) {
+			throw new DataIntegrityViolationException("Cliente: " + id
+					+ " tem os seguintes chamados processados em sistema: " + obj.getChamados().size());
+		}
+		repository.deleteById(id);
 	}
 
 }

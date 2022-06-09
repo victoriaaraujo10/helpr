@@ -6,11 +6,13 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.hibernate.event.spi.PreUpdateEventListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,7 +50,15 @@ public class ClienteResource {
 	public ResponseEntity<ClienteDTO> createCliente(@Valid @RequestBody ClienteDTO objDto) {
 		Cliente newObj = service.create(objDto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-			.path("/{id}").buildAndExpand(newObj.getId()).toUri();
+				.path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).build();
+	}
+
+	// Alteração dos dados do cliente:
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<ClienteDTO> updateCliente(
+			@PathVariable Integer id, @RequestBody ClienteDTO objDto) {
+		Cliente obj = service.update(id, objDto);
+		return ResponseEntity.ok().body(new ClienteDTO(obj));
 	}
 }

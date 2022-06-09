@@ -31,12 +31,12 @@ public class ClienteService {
 	}
 
 	// Método de busca por n ID's no banco
-    public List<Cliente> findAllClientes() {
-        return repository.findAll();
+	public List<Cliente> findAllClientes() {
+		return repository.findAll();
 	}
 
 	// Método de criação - novo cliente
-	public Cliente create(ClienteDTO objDto){
+	public Cliente create(ClienteDTO objDto) {
 		objDto.setId(null);
 		validaCpfEEmail(objDto);
 		Cliente newObj = new Cliente(objDto);
@@ -56,5 +56,14 @@ public class ClienteService {
 			throw new DataIntegrityViolationException("Erro: e-mail já cadastrado no sistema");
 		}
 	}
-	
+
+	// Método que modifica os clientes existentes
+	public Cliente update(Integer id, ClienteDTO objDto) {
+		objDto.setId(id);
+		Cliente oldObj = findById(id);
+		validaCpfEEmail(objDto);
+		oldObj = new Cliente(objDto);
+		return repository.save(oldObj);
+	}
+
 }
